@@ -108,8 +108,13 @@ function updatePeopleInputs() {
 
             //Add a select2 element to allow search and provide a list of choices
             var selectId = "personAddSelect_" + num;
-            $(personInput).parent().parent().children('div').eq(0).append(
-                '<select id=' + selectId + ' class="form-control add-resource select2" tabindex="0">');
+            var selectParent;
+            if (managedFields.personName) {
+                selectParent = $(parent).find("input[data-cvoc-managed-field='" + managedFields.personName + "']").parent();
+            } else {
+                selectParent = $(personInput).parent().parent().children('div').eq(0);
+            }
+            selectParent.append('<select id=' + selectId + ' class="form-control add-resource select2" tabindex="0">');
             var orcidSearchUrl = orcidBaseUrl.replace("https://","https://pub.") + "v3.0/expanded-search";
             $("#" + selectId).select2({
                 theme: "classic",
