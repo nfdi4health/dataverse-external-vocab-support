@@ -28,10 +28,12 @@ function expandRors() {
                     if (val !== null) {
                         let index = val.indexOf('(');
                         if (index != -1) {
+                            useParens = true;
                             $(rorElement)[0].previousSibling.data = val.substring(0, val.indexOf('('));
                         }
                     }
-                } else if (prev != null && prev.dataset.cvocMetadataName === 'authorName') {
+                }
+                if (prev != null && prev.dataset.cvocMetadataName === 'authorName') {
                     // TODO hack to use parens if this ROR is an author affiliation, and external vocab script for
                     // author ORCIDs is also active
                     useParens = true;
