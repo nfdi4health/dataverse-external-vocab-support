@@ -49,7 +49,7 @@ function expandRors() {
                     if (managedFields) {
                         managedFields = JSON.parse(managedFields);
                         if (Object.keys(managedFields).length > 0) {
-                            let orgName = rorElement.siblings("[data-cvoc-metadata-name='" + managedFields.orgName + "']").text();
+                            let orgName = $(rorElement).siblings("[data-cvoc-metadata-name='" + managedFields.orgName + "']").text();
                             $(rorElement).html(getDisplayHtml(orgName, id, undefined, false, useParens));
                         } else {
                             $(rorElement).html(getDisplayHtml(id, null, undefined, false, useParens));
