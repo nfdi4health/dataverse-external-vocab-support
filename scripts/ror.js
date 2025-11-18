@@ -295,6 +295,38 @@ function updateRorInputs() {
                 // For plain text entries (legacy or if tags are allowed), they are the same
                 // Setting .val() gets the info to Dataverse, using .attr() makes the change visible in the browser console
                 $("input[data-ror='" + num + "']").val(data.id).attr('value',data.id);
+
+                //In the multi-field case, we should also fill in the other hidden managed fields
+                if (hasParentField) {
+                    var parent = $("input[data-ror='" + num + "']").closest("[data-cvoc-parentfield='" + parentField + "']");
+                    let isRor = data.text.includes(',');
+                    for (var key in managedFields) {
+                        if (key == 'orgName') {
+                            var orgName = data.text.split(",", 1)[0];
+                            //When the field is hidden jQuery .val() doesn't set the value attribute, but does trigger sending the value back to the repository, whereas .attr() does the opposite
+                            // .val() is needed, .attr() helps with debugging (you can see the new value in the browser console)
+                            $(parent).find("input[data-cvoc-managed-field='" + managedFields[key] + "']").val(orgName).attr('value', orgName);
+                        } else if (key == 'idType') {
+                            let selectField = $(parent).find("[data-cvoc-managed-field='" + managedFields[key] + "']").find("select");
+                            let rorVal = $(selectField).find('option:contains("ROR")').val();
+                            $(selectField).val(isRor ? rorVal : '');
+
+                        }
+                    }
+                    if (Object.keys(managedFields).length > 0) {
+                        if (isRor) {
+                            //Hide managed fields
+                            $(parent).find("input[data-ror='" + num + "']").parent().hide();
+                            $(parent).find("[data-cvoc-managed-field='" + managedFields.idType + "']").parent().hide();
+                        } else {
+                            //Show managed fields
+                            let idField = $(parent).find("input[data-ror='" + num + "']");
+                            idField.val('');
+                            idField.parent().show();
+                            $(parent).find("[data-cvoc-managed-field='" + managedFields.idType + "']").parent().show();
+                        }
+                    }
+                }
             });
             // When a selection is cleared, clear the hidden input
             $('#' + selectId).on('select2:clear', function(e) {
