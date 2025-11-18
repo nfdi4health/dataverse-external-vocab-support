@@ -45,14 +45,23 @@ function expandRors() {
                 }
                 var id = rorElement.textContent;
                 if (!id.startsWith(rorIdStem)) {
-                    $(rorElement).html(getRorDisplayHtml(id, null, ['No ROR Entry'], false, useParens));
+                    let managedFields = $(rorElement).attr('data-cvoc-managedfields');
+                    if (managedFields) {
+                        managedFields = JSON.parse(managedFields);
+                        if (Object.keys(managedFields).length > 0) {
+                            let orgName = rorElement.siblings("[data-cvoc-metadata-name='" + managedFields.orgName + "']").text();
+                            $(rorElement).html(getDisplayHtml(orgName, id, undefined, false, useParens));
+                        } else {
+                            $(rorElement).html(getDisplayHtml(id, null, undefined, false, useParens));
+                        }
+                    }
                 } else {
                     //Remove the URL prefix - "https://ror.org/".length = 16
                     id = id.substring(rorIdStem.length);
                     //Check for cached entry
                     let value = getValue(rorPrefix, id);
                     if (value.name != null) {
-                        $(rorElement).html(getRorDisplayHtml(value.name, rorIdStem + id, value.altNames, false, useParens));
+                        $(rorElement).html(getDisplayHtml(value.name, rorIdStem + id, value.altNames, false, useParens));
                     } else {
                         // Try it as an ROR entry (could validate that it has the right form or can just let the GET fail)
                         $.ajax({
@@ -67,7 +76,7 @@ function expandRors() {
                                 var name = ror.name;
                                 var altNames = ror.acronyms;
 
-                                $(rorElement).html(getRorDisplayHtml(name, rorIdStem + id, altNames, false, true));
+                                $(rorElement).html(getDisplayHtml(name, rorIdStem + id, altNames, false, true));
                                 //Store values in localStorage to avoid repeating calls to CrossRef
                                 storeValue(rorPrefix, id, name + "#" + altNames);
                             },
@@ -86,7 +95,7 @@ function expandRors() {
     });
 }
 
-function getRorDisplayHtml(name, url, altNames, truncate = true, addParens = false) {
+function getDisplayHtml(name, url, altNames, truncate = true, addParens = false) {
     if (typeof (altNames) == 'undefined') {
         altNames = [];
     }
@@ -97,7 +106,13 @@ function getRorDisplayHtml(name, url, altNames, truncate = true, addParens = fal
         name = name.substring(0, rorMaxLength) + "…";
     }
     if (url != null) {
-        name = name + '<a href="' + url + '" target="_blank" rel="nofollow" >' + '<img alt="ROR logo" src="https://raw.githubusercontent.com/ror-community/ror-logos/main/ror-icon-rgb.svg" height="20" class="ror"/></a>';
+        if (url.startsWith(rorIdStem)) {
+            name = name + '<a href="' + url + '" target="_blank" rel="nofollow" >' + '<img alt="ROR logo" src="https://raw.githubusercontent.com/ror-community/ror-logos/main/ror-icon-rgb.svg" height="20" class="ror"/></a>';
+        } else if (url.startsWith("http://") || url.startsWith("https://")) {
+            name = name + ' (<a href="' + url + '" target="_blank" rel="nofollow" >' + url + '</a>)';
+        } else {
+            name = name + ' (' + url + ')';
+        }
     }
     if (addParens) {
         name = '(' + name + ')';
@@ -174,9 +189,9 @@ function updateRorInputs() {
                             altNames = idnum.substr(pos + 2).split(',');
                             idnum = idnum.substr(0, pos);
                         }
-                        return getRorDisplayHtml(name, rorIdStem + idnum, altNames);
+                        return getDisplayHtml(name, rorIdStem + idnum, altNames);
                     }
-                    return getRorDisplayHtml(name, null, ['No ROR Entry']);
+                    return getDisplayHtml(name, null, ['No ROR Entry']);
                 },
                 language: {
                     searching: function(params) {
