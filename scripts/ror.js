@@ -113,13 +113,13 @@ function updateRorInputs() {
 
             // Hide the actual input and give it a data-ror number so we can
             // find it
-            let parentField = $(personInput).attr('data-cvoc-parent');
-            var parent = $(personInput).closest("[data-cvoc-parentfield='" + parentField + "']");
+            let parentField = $(rorInput).attr('data-cvoc-parent');
+            var parent = $(rorInput).closest("[data-cvoc-parentfield='" + parentField + "']");
 
             let hasParentField = $("[data-cvoc-parentfield='" + parentField + "']").length > 0;
             let managedFields = {};
             if (hasParentField) {
-                managedFields = JSON.parse($(personInput).attr('data-cvoc-managedfields'));
+                managedFields = JSON.parse($(rorInput).attr('data-cvoc-managedfields'));
                 if (Object.keys(managedFields).length > 0) {
                     //Hide managed fields
                     $(parent).find("input[data-cvoc-managed-field='" + managedFields.orgName + "']").hide();
