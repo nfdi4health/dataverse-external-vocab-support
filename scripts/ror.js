@@ -21,20 +21,17 @@ function expandRors() {
             if (!$(rorElement).hasClass('expanded')) {
                 //Child field case - if non-managed display, the string before this is name (affiliation) and we need to remove the duplicate affiliation string
                 //This is true for Dataverse author field - may not be true elsewhere - tbd
-                let useParens = true;
-                let truncate = false;
+                let useParens = false;
                 let prev = $(rorElement)[0].previousSibling;
                 if (prev != null && prev.tagName != 'BR') {
                     let val = prev.nodeValue;
                     if (val !== null) {
                         let index = val.indexOf('(');
                         if (index != -1) {
+                            useParens = true;
                             $(rorElement)[0].previousSibling.data = val.substring(0, val.indexOf('('));
                         }
                     }
-                } else {
-                    useParens = false;
-                    truncate = true;
                 }
                 // Mark it as processed
                 $(rorElement).addClass('expanded');
