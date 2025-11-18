@@ -136,7 +136,13 @@ function updateRorInputs() {
             // Add a select2 element to allow search and provide a list of
             // choices
             var selectId = "rorAddSelect_" + num;
-            $(rorInput).after(
+            var selectLocation;
+            if (managedFields.orgName) {
+                selectLocation = $(parent).find("input[data-cvoc-managed-field='" + managedFields.orgName + "']");
+            } else {
+                selectLocation = $(rorInput);
+            }
+            selectLocation.after(
                 '<select id=' + selectId + ' class="form-control add-resource select2" tabindex="0" >');
             $("#" + selectId).select2({
                 theme: "classic",
