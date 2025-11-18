@@ -110,10 +110,27 @@ function updateRorInputs() {
         if (!rorInput.hasAttribute('data-ror')) {
             // Random identifier
             let num = Math.floor(Math.random() * 100000000000);
+
             // Hide the actual input and give it a data-ror number so we can
             // find it
-            $(rorInput).hide();
+            let parentField = $(personInput).attr('data-cvoc-parent');
+            var parent = $(personInput).closest("[data-cvoc-parentfield='" + parentField + "']");
+
+            let hasParentField = $("[data-cvoc-parentfield='" + parentField + "']").length > 0;
+            let managedFields = {};
+            if (hasParentField) {
+                managedFields = JSON.parse($(personInput).attr('data-cvoc-managedfields'));
+                if (Object.keys(managedFields).length > 0) {
+                    //Hide managed fields
+                    $(parent).find("input[data-cvoc-managed-field='" + managedFields.orgName + "']").hide();
+                    $(parent).find("[data-cvoc-managed-field='" + managedFields.idType + "']").parent().hide();
+                }
+                $(rorInput).parent().hide();
+            } else {
+                $(rorInput).hide();
+            }
             $(rorInput).attr('data-ror', num);
+
             // Todo: if not displayed, wait until it is to then create the
             // select 2 with a non-zero width
             // Add a select2 element to allow search and provide a list of
@@ -250,6 +267,15 @@ function updateRorInputs() {
                 });
             } else {
                 // If the initial value is not in ROR, just display it as is
+                if (Object.keys(managedFields).length > 0) {
+                    //Handle managed fields
+                    if (id.length > 0) {
+                        $(parent).find("[data-cvoc-managed-field='" + managedFields.idType + "']").parent().show();
+                        $(rorInput).parent().show();
+                    }
+                    id = $(parent).find("input[data-cvoc-managed-field='" + managedFields.orgName + "']").val();
+                }
+
                 var newOption = new Option(id, id, true, true);
                 newOption.altNames = ['No ROR Entry'];
                 $('#' + selectId).append(newOption).trigger('change');
