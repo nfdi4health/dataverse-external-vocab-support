@@ -284,7 +284,7 @@ jQuery(document).ready(function ($) {
                                 vocabsArr.push(key);
                             }
                             // Hardcoded URL with languages: change it if needed
-                            return `${cvocUrl}/search?require_exact_match=true&include_properties=true&pagesize=10&include_views=true&display_context=false&ontologies=${vocabsArr.join(",")}&lang=en,fr`;
+                            return `${cvocUrl}/search?require_exact_match=true&include_properties=true&pagesize=10&include_views=true&display_context=false&ontologies=${vocabsArr.join(",")}&lang=en`;
                         },
                         dataType: "json",
                         headers: cvocHeaders,
