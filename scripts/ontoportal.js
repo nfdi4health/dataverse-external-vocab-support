@@ -297,12 +297,10 @@ jQuery(document).ready(function ($) {
                             return {
                                 results: data.collection.map(
                                     function (x) {
-                                        // Get prefLabel array values in priority with "en", if not set get with "fr", if not set get with "none"
-                                        let prefLabelArr = x.prefLabel["en"] ? x.prefLabel["en"] : x.prefLabel["fr"] ? x.prefLabel["fr"] : x.prefLabel["none"];
                                         return {
                                             // Get the first preferred term name
-                                            text: `${prefLabelArr[0]} - ${findVocNameAndAcronymById(x.links.ontology)}`,
-                                            name: prefLabelArr[0],
+                                            text: `${x.prefLabel} - ${findVocNameAndAcronymById(x.links.ontology)}`,
+                                            name: x.prefLabel,
                                             id: x["@id"],
                                             voc: x.links.ontology,
                                             uiUrl: x.links.ui,
