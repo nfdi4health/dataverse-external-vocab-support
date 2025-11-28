@@ -140,7 +140,7 @@ jQuery(document).ready(function ($) {
                     if ($(this).is(`[data-cvoc-metadata-name="${managedFields.vocabularyName}"]`)) {
                         newText = `(${newText})`;
                     }
-                    if ($(this).siblings(`[data-cvoc-metadata-name="${managedFields.termName}"][data-cvoc-index="${index}]"]`).length > 0) {
+                    if ($(this).siblings(`[data-cvoc-metadata-name="${managedFields.termName}"][data-cvoc-index="${index}"]`).length > 0) {
                         newText = `&nbsp;${newText}`;
                     }
                     $(this).replaceWith($("<span></span>").append(`${newText}&nbsp;`));
